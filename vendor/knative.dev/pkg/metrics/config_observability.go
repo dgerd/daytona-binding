@@ -27,10 +27,6 @@ import (
 const (
 	// The following is used to set the default log url template
 	DefaultLogURLTemplate = "http://localhost:8001/api/v1/namespaces/knative-monitoring/services/kibana-logging/proxy/app/kibana#/discover?_a=(query:(match:(kubernetes.labels.knative-dev%2FrevisionUID:(query:'${REVISION_UID}',type:phrase))))"
-
-	// The following is used to set the default metrics backend
-	DefaultRequestMetricsBackend = "prometheus"
-
 	// The env var name for config-observability
 	ConfigMapNameEnv = "CONFIG_OBSERVABILITY_NAME"
 )
@@ -88,8 +84,6 @@ func NewObservabilityConfigFromConfigMap(configMap *corev1.ConfigMap) (*Observab
 
 	if mb, ok := configMap.Data["metrics.request-metrics-backend-destination"]; ok {
 		oc.RequestMetricsBackend = mb
-	} else {
-		oc.RequestMetricsBackend = DefaultRequestMetricsBackend
 	}
 
 	if prof, ok := configMap.Data["profiling.enable"]; ok {

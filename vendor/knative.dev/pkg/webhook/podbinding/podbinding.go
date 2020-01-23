@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package psbinding
+package podbinding
 
 import (
 	"bytes"
@@ -28,8 +28,7 @@ import (
 	"github.com/markbates/inflect"
 	admissionv1beta1 "k8s.io/api/admission/v1beta1"
 	admissionregistrationv1beta1 "k8s.io/api/admissionregistration/v1beta1"
-	appsv1 "k8s.io/api/apps/v1"
-	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -135,7 +134,7 @@ func (ac *Reconciler) Admit(ctx context.Context, request *admissionv1beta1.Admis
 		return &admissionv1beta1.AdmissionResponse{Allowed: true}
 	}
 
-	orig := &duckv1.WithPod{}
+	orig := &duckv1.WithPodable{}
 	decoder := json.NewDecoder(bytes.NewBuffer(request.Object.Raw))
 	if err := decoder.Decode(&orig); err != nil {
 		return webhook.MakeErrorStatus("unable to decode object: %v", err)
@@ -208,10 +207,7 @@ func (ac *Reconciler) reconcileMutatingWebhook(ctx context.Context, caCert []byt
 	// Build a deduplicated list of all of the GVKs we see.
 	// We seed the Kubernetes built-ins.
 	gks := map[schema.GroupKind]sets.String{
-		appsv1.SchemeGroupVersion.WithKind("Deployment").GroupKind():  sets.NewString("v1"),
-		appsv1.SchemeGroupVersion.WithKind("StatefulSet").GroupKind(): sets.NewString("v1"),
-		appsv1.SchemeGroupVersion.WithKind("DaemonSet").GroupKind():   sets.NewString("v1"),
-		batchv1.SchemeGroupVersion.WithKind("Job").GroupKind():        sets.NewString("v1"),
+		corev1.SchemeGroupVersion.WithKind("Pod").GroupKind():  sets.NewString("v1"),
 	}
 
 	// When reconciling the webhook, enumerate all of the bindings, so that
