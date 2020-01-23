@@ -17,7 +17,7 @@ kind: Service
 metadata:
   labels:
     role: webhook
-    daytona.binding.app/release: devel
+    binding.app/release: devel
   name: webhook
   namespace: binding-system
 spec:

@@ -15,7 +15,7 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: defaulting.webhook.daytona.binding.app
+  name: defaulting.webhook.binding.app
   labels:
     daytona.binding.app/release: devel
 webhooks:
@@ -26,12 +26,12 @@ webhooks:
       name: webhook
       namespace: binding-system
   failurePolicy: Fail
-  name: defaulting.webhook.daytona.binding.app
+  name: defaulting.webhook.binding.app
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: validation.webhook.daytona.binding.app
+  name: validation.webhook.binding.app
   labels:
     daytona.binding.app/release: devel
 webhooks:
@@ -42,12 +42,12 @@ webhooks:
       name: webhook
       namespace: binding-system
   failurePolicy: Fail
-  name: validation.webhook.daytona.binding.app
+  name: validation.webhook.binding.app
 ---
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: config.webhook.daytona.binding.app
+  name: config.webhook.binding.app
   labels:
     daytona.binding.app/release: devel
 webhooks:
@@ -58,7 +58,7 @@ webhooks:
       name: webhook
       namespace: binding-system
   failurePolicy: Fail
-  name: config.webhook.daytona.binding.app
+  name: config.webhook.binding.app
   namespaceSelector:
     matchExpressions:
     - key: daytona.binding.app/release
@@ -67,7 +67,7 @@ webhooks:
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: githubbindings.webhook.daytona.binding.app
+  name: daytonabindings.webhook.binding.app
   labels:
     daytona.binding.app/release: devel
 webhooks:
@@ -78,55 +78,7 @@ webhooks:
       name: webhook
       namespace: binding-system
   failurePolicy: Fail
-  name: githubbindings.webhook.daytona.binding.app
----
-apiVersion: admissionregistration.k8s.io/v1beta1
-kind: MutatingWebhookConfiguration
-metadata:
-  name: slackbindings.webhook.daytona.binding.app
-  labels:
-    daytona.binding.app/release: devel
-webhooks:
-- admissionReviewVersions:
-  - v1beta1
-  clientConfig:
-    service:
-      name: webhook
-      namespace: binding-system
-  failurePolicy: Fail
-  name: slackbindings.webhook.daytona.binding.app
----
-apiVersion: admissionregistration.k8s.io/v1beta1
-kind: MutatingWebhookConfiguration
-metadata:
-  name: twitterbindings.webhook.daytona.binding.app
-  labels:
-    daytona.binding.app/release: devel
-webhooks:
-- admissionReviewVersions:
-  - v1beta1
-  clientConfig:
-    service:
-      name: webhook
-      namespace: binding-system
-  failurePolicy: Fail
-  name: twitterbindings.webhook.daytona.binding.app
----
-apiVersion: admissionregistration.k8s.io/v1beta1
-kind: MutatingWebhookConfiguration
-metadata:
-  name: googlecloudsqlbindings.webhook.daytona.binding.app
-  labels:
-    daytona.binding.app/release: devel
-webhooks:
-- admissionReviewVersions:
-  - v1beta1
-  clientConfig:
-    service:
-      name: webhook
-      namespace: binding-system
-  failurePolicy: Fail
-  name: googlecloudsqlbindings.webhook.daytona.binding.app
+  name: daytonabindings.webhook.binding.app
 ---
 apiVersion: v1
 kind: Secret

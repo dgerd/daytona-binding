@@ -18,8 +18,8 @@ metadata:
   name: webhook
   namespace: binding-system
   labels:
-    daytona.binding.app/release: devel
-    daytona.binding.app/exclude: "true"
+    binding.app/release: devel
+    binding.app/exclude: "true"
 spec:
   replicas: 1
   selector:
@@ -61,3 +61,5 @@ spec:
           value: config-logging
         - name: METRICS_DOMAIN
           value: binding.app/bindings
+        - name: KUBERNETES_MIN_VERSION
+          value: "v1.14.0"

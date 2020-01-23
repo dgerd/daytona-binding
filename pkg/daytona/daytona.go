@@ -16,12 +16,16 @@ limitations under the License.
 
 package daytona
 
+import (
+	corev1 "k8s.io/api/core/v1"
+)
+
 const (
 	ContainerName    = "daytona"
 	SecretVolumeName = "vault-secrets"
 	MountPath        = "/home/vault"
 	RunAsUser        = 9999
 	AllowPriv        = false
-	Medium           = "Memory"
+	Medium           = corev1.StorageMediumMemory
 	SecretMountPath  = MountPath + "/secrets"   
 )

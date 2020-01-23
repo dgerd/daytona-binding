@@ -31,13 +31,13 @@ import (
 	"knative.dev/pkg/webhook"
 	"knative.dev/pkg/webhook/certificates"
 	"knative.dev/pkg/webhook/configmaps"
-	"knative.dev/pkg/webhook/psbinding"
+	"knative.dev/pkg/webhook/podbinding"
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/defaulting"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
 
-	"github.com/dgerd/daytona-binding/pkg/apis/v1alpha1"
-	"github.com/dgerd/daytona-binding/pkg/reconciler"
+	"github.com/dgerd/daytona-binding/pkg/apis/daytonabinding/v1alpha1"
+	"github.com/dgerd/daytona-binding/pkg/reconciler/daytona"
 )
 
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
@@ -47,7 +47,7 @@ var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
 func NewDefaultingAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 	return defaulting.NewAdmissionController(ctx,
 		// Name of the resource webhook.
-		"defaulting.webhook.daytona.binding.app",
+		"defaulting.webhook.binding.app",
 
 		// The path on which to serve the webhook.
 		"/defaulting",
@@ -68,7 +68,7 @@ func NewDefaultingAdmissionController(ctx context.Context, cmw configmap.Watcher
 func NewValidationAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 	return validation.NewAdmissionController(ctx,
 		// Name of the resource webhook.
-		"validation.webhook.daytona.binding.app",
+		"validation.webhook.binding.app",
 
 		// The path on which to serve the webhook.
 		"/validation",
@@ -90,7 +90,7 @@ func NewConfigValidationController(ctx context.Context, cmw configmap.Watcher) *
 	return configmaps.NewAdmissionController(ctx,
 
 		// Name of the configmap webhook.
-		"config.webhook.daytona.binding.app",
+		"config.webhook.binding.app",
 
 		// The path on which to serve the webhook.
 		"/config-validation",
@@ -103,11 +103,11 @@ func NewConfigValidationController(ctx context.Context, cmw configmap.Watcher) *
 	)
 }
 
-func NewBindingWebhook(resource string, gla psbinding.GetListAll, wc psbinding.BindableContext) injection.ControllerConstructor {
+func NewBindingWebhook(resource string, gla podbinding.GetListAll, wc podbinding.BindableContext) injection.ControllerConstructor {
 	return func(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
-		return psbinding.NewAdmissionController(ctx,
+		return podbinding.NewAdmissionController(ctx,
 			// Name of the resource webhook.
-			fmt.Sprintf("%s.webhook.daytona.binding.app", resource),
+			fmt.Sprintf("%s.webhook.binding.app", resource),
 
 			// The path on which to serve the webhook.
 			fmt.Sprintf("/%s", resource),
@@ -129,7 +129,7 @@ func main() {
 		SecretName:  "webhook-certs",
 	})
 
-	nop := func(ctx context.Context, b psbinding.Bindable) (context.Context, error) {
+	nop := func(ctx context.Context, b podbinding.Bindable) (context.Context, error) {
 		return ctx, nil
 	}
 
@@ -143,6 +143,6 @@ func main() {
 		NewConfigValidationController,
 
 		// For each binding we have a controller and a binding webhook.
-		reconciler.NewController, NewBindingWebhook("daytonabindings", daytonabinding.ListAll, nop),
+		daytona.NewController, NewBindingWebhook("daytonabindings", daytona.ListAll, nop),
 	)
 }

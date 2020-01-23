@@ -19,8 +19,8 @@ package daytona
 import (
 	"context"
 
-	sqlinformer "github.com/mattmoor/bindings/pkg/client/injection/informers/bindings/v1alpha1/googlecloudsqlbinding"
-	"knative.dev/pkg/client/injection/ducks/duck/v1/podspecable"
+	dbinformer "github.com/dgerd/daytona-binding/pkg/client/injection/informers/daytonabinding/v1alpha1/daytonabinding"
+	"knative.dev/pkg/client/injection/ducks/duck/v1/podable"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -33,45 +33,47 @@ import (
 	"knative.dev/pkg/injection/clients/dynamicclient"
 	"knative.dev/pkg/logging"
 	"knative.dev/pkg/tracker"
-	"knative.dev/pkg/webhook/psbinding"
+	"knative.dev/pkg/webhook/podbinding"
 
-	"github.com/mattmoor/bindings/pkg/apis/bindings/v1alpha1"
+	"github.com/dgerd/daytona-binding/pkg/apis/daytonabinding/v1alpha1"
 )
 
 const (
-	controllerAgentName = "cloudsqlbinding-controller"
+	controllerAgentName = "daytona-controller"
 )
 
-// NewController returns a new GoogleCloudSQLBinding reconciler.
+// NewController returns a new DaytonaBinding reconciler. This reconciler tracks changes on the
+// DaytonaBinding CRD object to ensure the webhook is targeting the current tracked resources and
+// that the latest configuration options are being applied.
 func NewController(
 	ctx context.Context,
 	cmw configmap.Watcher,
 ) *controller.Impl {
 	logger := logging.FromContext(ctx)
 
-	sqlInformer := sqlinformer.Get(ctx)
+	dbInformer := dbinformer.Get(ctx)
 	dc := dynamicclient.Get(ctx)
-	psInformerFactory := podspecable.Get(ctx)
+	podInformerFactory := podable.Get(ctx)
 
-	c := &psbinding.BaseReconciler{
-		GVR: v1alpha1.SchemeGroupVersion.WithResource("googlecloudsqlbindings"),
-		Get: func(namespace string, name string) (psbinding.Bindable, error) {
-			return sqlInformer.Lister().GoogleCloudSQLBindings(namespace).Get(name)
+	c := &podbinding.BaseReconciler{
+		GVR: v1alpha1.SchemeGroupVersion.WithResource("daytonabindings"),
+		Get: func(namespace string, name string) (podbinding.Bindable, error) {
+			return dbInformer.Lister().DaytonaBindings(namespace).Get(name)
 		},
 		DynamicClient: dc,
 		Recorder: record.NewBroadcaster().NewRecorder(
 			scheme.Scheme, corev1.EventSource{Component: controllerAgentName}),
 	}
-	impl := controller.NewImpl(c, logger, "GoogleCloudSQLBindings")
+	impl := controller.NewImpl(c, logger, "DaytonaBindings")
 
 	logger.Info("Setting up event handlers")
 
-	sqlInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
+	dbInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
 
 	c.Tracker = tracker.New(impl.EnqueueKey, controller.GetTrackerLease(ctx))
 	c.Factory = &duck.CachedInformerFactory{
 		Delegate: &duck.EnqueueInformerFactory{
-			Delegate:     psInformerFactory,
+			Delegate:     podInformerFactory,
 			EventHandler: controller.HandleAll(c.Tracker.OnChanged),
 		},
 	}
@@ -79,18 +81,18 @@ func NewController(
 	return impl
 }
 
-func ListAll(ctx context.Context, handler cache.ResourceEventHandler) psbinding.ListAll {
-	sqlInformer := sqlinformer.Get(ctx)
+func ListAll(ctx context.Context, handler cache.ResourceEventHandler) podbinding.ListAll {
+	dbInformer := dbinformer.Get(ctx)
 
-	// Whenever a GoogleCloudSQLBinding changes our webhook programming might change.
-	sqlInformer.Informer().AddEventHandler(handler)
+	// Whenever a DaytonaBinding changes our webhook programming might change.
+	dbInformer.Informer().AddEventHandler(handler)
 
-	return func() ([]psbinding.Bindable, error) {
-		l, err := sqlInformer.Lister().List(labels.Everything())
+	return func() ([]podbinding.Bindable, error) {
+		l, err := dbInformer.Lister().List(labels.Everything())
 		if err != nil {
 			return nil, err
 		}
-		bl := make([]psbinding.Bindable, 0, len(l))
+		bl := make([]podbinding.Bindable, 0, len(l))
 		for _, elt := range l {
 			bl = append(bl, elt)
 		}

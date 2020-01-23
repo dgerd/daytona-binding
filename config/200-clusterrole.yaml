@@ -19,16 +19,18 @@ metadata:
 aggregationRule:
   clusterRoleSelectors:
   - matchLabels:
-      daytona.binding.app/controller: "true"
+      binding.app/controller: "true"
 rules: [] # Rules are automatically filled in by the controller manager.
 ---
+# This piece of the aggregated cluster role enables us to run our reconciler and manipulate
+# the webhooks and CRDs. There might be opportunity to shrink this.
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: binding-system-core
   labels:
-    daytona.binding.app/release: devel
-    daytona.binding.app/controller: "true"
+    binding.app/release: devel
+    binding.app/controller: "true"
 rules:
   - apiGroups: [""]
     resources: ["configmaps", "services", "secrets", "events"]
@@ -43,45 +45,29 @@ rules:
     resources: ["customresourcedefinitions"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
 ---
+# This piece of the aggregated cluster role enables us to manipulate our CRDs.
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: binding-system-crd
   labels:
-    daytona.binding.app/release: devel
-    daytona.binding.app/controller: "true"
+    binding.app/release: devel
+    binding.app/controller: "true"
 rules:
-  - apiGroups: ["daytona.binding.app"]
+  - apiGroups: ["binding.app"]
     resources: ["*"]
     verbs: ["*"]
 ---
-# This piece of the aggregated cluster role enables us to bind to the built-in
-# Kubernetes apps resources
+# This piece of the aggregated cluster role enables us to bind to pods.
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: binding-system-apps
+  name: binding-system-pods
   labels:
-    daytona.binding.app/release: devel
-    daytona.binding.app/controller: "true"
+    binding.app/release: devel
+    binding.app/controller: "true"
 rules:
-  - apiGroups: ["apps"]
-    resources: ["deployments", "daemonsets", "statefulsets"]
-    verbs: ["get", "list", "patch", "watch"]
-  - apiGroups: ["batch"]
-    resources: ["jobs"]
+  - apiGroups: [""]
+    resources: ["pods"]
     verbs: ["get", "list", "patch", "watch"]
 ---
-# This piece of the aggregated cluster role enables us to bind to
-# Knative service resources
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: binding-system-knative-serving
-  labels:
-    daytona.binding.app/release: devel
-    daytona.binding.app/controller: "true"
-rules:
-  - apiGroups: ["serving.knative.dev"]
-    resources: ["services", "configurations"]
-    verbs: ["get", "list", "patch", "watch"]

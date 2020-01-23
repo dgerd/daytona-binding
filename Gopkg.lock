@@ -92,14 +92,6 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:e02ffb382584a22c006311c9a9c39df1f2d65e2114e67dd2486f43924f141f0a"
-  name = "github.com/cenkalti/backoff"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "a9a4cec6c9a26336ca42700ccc319ca842be56c0"
-  version = "v4.0.0"
-
-[[projects]]
   digest = "1:e7d26760c4e7d67a443b082153c4b473ad0b8f7388302a2f788b1360f751abb8"
   name = "github.com/census-instrumentation/opencensus-proto"
   packages = [
@@ -120,44 +112,12 @@
   version = "v1.1.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:ccbd5b4079e67036e339297ce0beb95a3d57575e4ca065142fc1859a9b2859a8"
-  name = "github.com/dghubble/go-twitter"
-  packages = ["twitter"]
-  pruneopts = "NUT"
-  revision = "39e5462e111ffe165c62a88e2c25e1c1d1085bdb"
-
-[[projects]]
-  digest = "1:46c8cea5dd259094c4bdf9b67bd509da71a0e5bff43f9393c2327894313ec8b4"
-  name = "github.com/dghubble/oauth1"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "19d7291ba290f420ccea50e076322aca95f27fcd"
-  version = "v0.6.0"
-
-[[projects]]
-  digest = "1:94e2d42aa48e73c659998e481dcae92b0a8aadab9ec8c1e705d6769883fee82b"
-  name = "github.com/dghubble/sling"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "5a2946623f885d0cfcd7085b039baec12ad53fdd"
-  version = "v1.3.0"
-
-[[projects]]
   digest = "1:426cd9e1f0304cf8645cf3b2dc12fc2d1c481793da6f2fafc9e5c202b14a101a"
   name = "github.com/evanphx/json-patch"
   packages = ["."]
   pruneopts = "NUT"
   revision = "bf22ed9311622d93e213ba31e4ae7a5771e5d379"
   version = "v4.6.0"
-
-[[projects]]
-  digest = "1:24f20a61b3d084137d13cf53aba7365862b850fe4f30b733ed0e3c7ade9ca86d"
-  name = "github.com/go-sql-driver/mysql"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "17ef3dd9d98b69acec3e85878995ada9533a9370"
-  version = "v1.5.0"
 
 [[projects]]
   digest = "1:fcd8ddc48ce648d5fbb36029fe3dd98f29c03377eea5c4a3c436701b0e3f2774"
@@ -218,22 +178,6 @@
   revision = "6f77996f0c42f7b84e5a2b252227263f93432e9b"
 
 [[projects]]
-  digest = "1:92a2e4ce17e6b468e1a7c7cd2d6c1570a0503276a9fb07e31f9bf27c5979196c"
-  name = "github.com/google/go-github"
-  packages = ["github"]
-  pruneopts = "NUT"
-  revision = "ab35a4779b48b6089e8d3a80cc99c544695853eb"
-  version = "v29.0.2"
-
-[[projects]]
-  digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
-  name = "github.com/google/go-querystring"
-  packages = ["query"]
-  pruneopts = "NUT"
-  revision = "44c6ddd0a2342c386950e880b658017258da92fc"
-  version = "v1.0.0"
-
-[[projects]]
   digest = "1:3ec6c8e4b700377066dbb5ab3155c55f97109ab6147fee9423a68506d79bbafa"
   name = "github.com/google/gofuzz"
   packages = ["."]
@@ -283,14 +227,6 @@
   pruneopts = "NUT"
   revision = "ab0dd09aa10e2952b28e12ecd35681b20463ebab"
   version = "v0.3.1"
-
-[[projects]]
-  digest = "1:d5344bb08f1d8dc55f9a513ac4f971a9c8baeb73690b7cde56f4fe8a9143ef62"
-  name = "github.com/gorilla/websocket"
-  packages = ["."]
-  pruneopts = "NUT"
-  revision = "c3e18be99d19e6b3e8f1559eea2c161a665c4b6b"
-  version = "v1.4.1"
 
 [[projects]]
   digest = "1:9676627451831e0d8e347007d871eac494ce51d55b95a3fe1fac30ad8d717ab9"
@@ -351,33 +287,6 @@
   revision = "81af80346b1a01caae0cbc27fd3c1ba5b11e189f"
 
 [[projects]]
-  branch = "master"
-  digest = "1:46b68729fa473df689846c850d444b24a8ce82493048f1af8ca101d9cef83590"
-  name = "github.com/mattmoor/bindings"
-  packages = [
-    "pkg/apis/bindings",
-    "pkg/apis/bindings/v1alpha1",
-    "pkg/bindings",
-    "pkg/client/clientset/versioned",
-    "pkg/client/clientset/versioned/scheme",
-    "pkg/client/clientset/versioned/typed/bindings/v1alpha1",
-    "pkg/client/informers/externalversions",
-    "pkg/client/informers/externalversions/bindings",
-    "pkg/client/informers/externalversions/bindings/v1alpha1",
-    "pkg/client/informers/externalversions/internalinterfaces",
-    "pkg/client/injection/client",
-    "pkg/client/injection/informers/bindings/v1alpha1/googlecloudsqlbinding",
-    "pkg/client/injection/informers/factory",
-    "pkg/client/listers/bindings/v1alpha1",
-    "pkg/cloudsql",
-    "pkg/github",
-    "pkg/slack",
-    "pkg/twitter",
-  ]
-  pruneopts = "NUT"
-  revision = "6f3a5f7f5516c2b84eaa8f125eee0517b23a25b2"
-
-[[projects]]
   digest = "1:5985ef4caf91ece5d54817c11ea25f182697534f8ae6521eadcd628c142ac4b6"
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
@@ -400,19 +309,6 @@
   pruneopts = "NUT"
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
-
-[[projects]]
-  digest = "1:75aa2d27470d17962a1bb00b8fa949c8c78ca278d1aa61632810028ae34d1cf2"
-  name = "github.com/nlopes/slack"
-  packages = [
-    ".",
-    "internal/errorsx",
-    "internal/timex",
-    "slackutilsx",
-  ]
-  pruneopts = "NUT"
-  revision = "1af34b6bda3d43878255fff7bd2884ea0c23295e"
-  version = "v0.6.0"
 
 [[projects]]
   digest = "1:4047c378584616813d610c9f993bf90dd0d07aed8d94bd3bc299cd35ececdcba"
@@ -563,18 +459,9 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3b4e496f64d86d15a4732cd995defdb9ce1f9f12b50f7d7c948048416f644c38"
+  digest = "1:c8b0363634b7f813bd07d829fa98af420d99c68d9e88077a7c86fad8e6e31e27"
   name = "golang.org/x/crypto"
-  packages = [
-    "cast5",
-    "openpgp",
-    "openpgp/armor",
-    "openpgp/elgamal",
-    "openpgp/errors",
-    "openpgp/packet",
-    "openpgp/s2k",
-    "ssh/terminal",
-  ]
+  packages = ["ssh/terminal"]
   pruneopts = "NUT"
   revision = "530e935923ad688be97c15eeb8e5ee42ebf2b54a"
 
@@ -608,11 +495,10 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:df8679f35ad2b2781e66568a3eeb1ced577457db9ce73ffd9675c01ebf0b0be1"
+  digest = "1:b16c67a209af9d3ecf1e09d1ccee69ae6a04a6d07763819cab2b7001e8ac21de"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
-    "clientcredentials",
     "google",
     "internal",
     "jws",
@@ -948,10 +834,11 @@
   version = "kubernetes-1.16.4"
 
 [[projects]]
-  digest = "1:06db9a8977489739f66f482d2ca19d8b480c139100b3162599aec60ae2e68fef"
+  digest = "1:d5b26b8dfb8f6a0c8486b8d5957ae31b7605c3168e2e13b8ae5531c62eb3e98d"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "discovery/fake",
     "dynamic",
     "informers",
     "informers/admissionregistration",
@@ -1088,6 +975,7 @@
     "plugin/pkg/client/auth/exec",
     "rest",
     "rest/watch",
+    "testing",
     "tools/auth",
     "tools/cache",
     "tools/clientcmd",
@@ -1196,7 +1084,7 @@
     "apis/duck/v1alpha1",
     "apis/duck/v1beta1",
     "changeset",
-    "client/injection/ducks/duck/v1/podspecable",
+    "client/injection/ducks/duck/v1/podable",
     "client/injection/kube/client",
     "client/injection/kube/informers/admissionregistration/v1beta1/mutatingwebhookconfiguration",
     "client/injection/kube/informers/admissionregistration/v1beta1/validatingwebhookconfiguration",
@@ -1226,7 +1114,7 @@
     "webhook/certificates",
     "webhook/certificates/resources",
     "webhook/configmaps",
-    "webhook/psbinding",
+    "webhook/podbinding",
     "webhook/resourcesemantics",
     "webhook/resourcesemantics/defaulting",
     "webhook/resourcesemantics/validation",
@@ -1258,16 +1146,24 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/mattmoor/bindings/pkg/apis/bindings/v1alpha1",
-    "github.com/mattmoor/bindings/pkg/client/injection/informers/bindings/v1alpha1/googlecloudsqlbinding",
     "k8s.io/api/core/v1",
+    "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/labels",
     "k8s.io/apimachinery/pkg/runtime",
     "k8s.io/apimachinery/pkg/runtime/schema",
+    "k8s.io/apimachinery/pkg/runtime/serializer",
+    "k8s.io/apimachinery/pkg/types",
+    "k8s.io/apimachinery/pkg/util/runtime",
+    "k8s.io/apimachinery/pkg/watch",
+    "k8s.io/client-go/discovery",
+    "k8s.io/client-go/discovery/fake",
     "k8s.io/client-go/kubernetes/scheme",
+    "k8s.io/client-go/rest",
+    "k8s.io/client-go/testing",
     "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/record",
+    "k8s.io/client-go/util/flowcontrol",
     "k8s.io/code-generator/cmd/client-gen",
     "k8s.io/code-generator/cmd/deepcopy-gen",
     "k8s.io/code-generator/cmd/defaulter-gen",
@@ -1278,7 +1174,7 @@
     "knative.dev/pkg/apis/duck/v1",
     "knative.dev/pkg/apis/duck/v1alpha1",
     "knative.dev/pkg/apis/duck/v1beta1",
-    "knative.dev/pkg/client/injection/ducks/duck/v1/podspecable",
+    "knative.dev/pkg/client/injection/ducks/duck/v1/podable",
     "knative.dev/pkg/codegen/cmd/injection-gen",
     "knative.dev/pkg/configmap",
     "knative.dev/pkg/controller",
@@ -1288,12 +1184,13 @@
     "knative.dev/pkg/kmeta",
     "knative.dev/pkg/logging",
     "knative.dev/pkg/metrics",
+    "knative.dev/pkg/ptr",
     "knative.dev/pkg/signals",
     "knative.dev/pkg/tracker",
     "knative.dev/pkg/webhook",
     "knative.dev/pkg/webhook/certificates",
     "knative.dev/pkg/webhook/configmaps",
-    "knative.dev/pkg/webhook/psbinding",
+    "knative.dev/pkg/webhook/podbinding",
     "knative.dev/pkg/webhook/resourcesemantics",
     "knative.dev/pkg/webhook/resourcesemantics/defaulting",
     "knative.dev/pkg/webhook/resourcesemantics/validation",

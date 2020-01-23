@@ -17,7 +17,7 @@ kind: ClusterRoleBinding
 metadata:
   name: binding-system-controller-admin
   labels:
-    daytona.binding.app/release: devel
+    binding.app/release: devel
 subjects:
   - kind: ServiceAccount
     name: controller

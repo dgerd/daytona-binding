@@ -18,7 +18,7 @@ metadata:
   name: config-logging
   namespace: binding-system
   labels:
-    daytona.binding.app/release: devel
+    binding.app/release: devel
 
 data:
   _example: |

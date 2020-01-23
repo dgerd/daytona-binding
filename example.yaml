@@ -1,0 +1,22 @@
+apiVersion: binding.app/v1alpha1
+kind: DaytonaBinding
+metadata:
+  name: daytona-binding
+  namespace: default
+spec:
+  subject:
+    apiVersion: v1
+    kind: Pod
+    namespace: default
+    selector:
+      matchExpressions:
+        - {key: serving.knative.dev/service, operator: Exists}
+  image: gcr.io/dangerd-dev/daytona
+  auth: "true"
+  authMount: "kubernetes-gcp-dev-cluster"
+  secretEnv: "true"
+  tokenPath: "/home/vault/.vault-token"
+  vaultAuthRole: "awesome-app-vault-role-name"
+  secretPath: "/home/vault/secrets"
+  vaultSecretsApp: "secret/path/to/app"
+  vaultSecretsGlobal: "secret/path/to/global/metrics"
