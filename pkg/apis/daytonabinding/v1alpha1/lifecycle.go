@@ -90,6 +90,10 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 	pod.Spec.Volumes = append(pod.Spec.Volumes, volume)
 
 
+	volumeMount := []corev1.VolumeMount{{
+		Name: daytona.SecretVolumeName,
+		MountPath: daytona.SecretMountPath,
+	}}
 	// Add daytona to the init containers section.
 	container := corev1.Container{
 		Name: daytona.ContainerName,
@@ -98,13 +102,23 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 			RunAsUser: ptr.Int64(daytona.RunAsUser),
 			AllowPrivilegeEscalation: ptr.Bool(false),
 		},
-		VolumeMounts: []corev1.VolumeMount{{
-			Name: daytona.SecretVolumeName,
-			MountPath: daytona.SecretMountPath,
-		}},
+		VolumeMounts: volumeMount,
 		Image: db.Spec.Image,
 	}
 	pod.Spec.InitContainers = append(pod.Spec.InitContainers, container)
+
+	// Add volume mount to the user container. As users can customize the container name
+	// and sidecars can vary we look this up by the presence of the `K_REVISION` Environment
+	// Variable. This is a hack, but works.
+	for i, c := range pod.Spec.Containers {
+		for _, e := range c.Env {
+			// This container is the user container. Modify and then exit.
+			if e.Name == "K_REVISION" {
+				pod.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts, volumeMount[0])
+				return
+			}
+		}
+	}
 }
 
 // Undo implements the logic of removing all of the Daytona content from the Pod.
@@ -123,6 +137,17 @@ func (db *DaytonaBinding) Undo(ctx context.Context, pod *duckv1.WithPodable) {
 		if c.Name == daytona.ContainerName {
 			pod.Spec.InitContainers = append(pod.Spec.InitContainers[:i], pod.Spec.InitContainers[i+1:]...)
 			break
+		}
+	}
+
+	// Remove Volume from user container
+	for i, c := range pod.Spec.Containers {
+		for j, e := range c.Env {
+			// This container is the user container. Remove and then exit.
+			if e.Name == "K_REVISION" {
+				pod.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts[:j], pod.Spec.Containers[i].VolumeMounts[j+1:]...)
+				return
+			}
 		}
 	}
 }
