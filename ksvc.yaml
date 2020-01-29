@@ -1,12 +1,10 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: pizzaplanetv1-test-image
+  name: hello-world
   namespace: default
 spec:
   template:
-    metadata:
-      name: pizzaplanetv1-test-image-1
     spec:
       containers:
-      - image: knative.dev/serving/test/test_images/pizzaplanetv1
+      - image: gcr.io/cloudrun/hello
