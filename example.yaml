@@ -19,10 +19,10 @@ metadata:
 spec:
   # Subject defines the set of Resources to inject
   subject:
-    apiVersion: v1
+    apiVersion: apps/v1
     # Inject into Pods in the 'default' namespace with the label
     # 'serving.knative.dev/service'
-    kind: Pod
+    kind: Deployment
     namespace: default
     selector:
       matchExpressions:

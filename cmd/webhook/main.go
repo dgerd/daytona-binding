@@ -31,7 +31,7 @@ import (
 	"knative.dev/pkg/webhook"
 	"knative.dev/pkg/webhook/certificates"
 	"knative.dev/pkg/webhook/configmaps"
-	"knative.dev/pkg/webhook/podbinding"
+	"knative.dev/pkg/webhook/psbinding"
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/defaulting"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
@@ -103,9 +103,9 @@ func NewConfigValidationController(ctx context.Context, cmw configmap.Watcher) *
 	)
 }
 
-func NewBindingWebhook(resource string, gla podbinding.GetListAll, wc podbinding.BindableContext) injection.ControllerConstructor {
+func NewBindingWebhook(resource string, gla psbinding.GetListAll, wc psbinding.BindableContext) injection.ControllerConstructor {
 	return func(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
-		return podbinding.NewAdmissionController(ctx,
+		return psbinding.NewAdmissionController(ctx,
 			// Name of the resource webhook.
 			fmt.Sprintf("%s.webhook.binding.app", resource),
 
@@ -129,7 +129,7 @@ func main() {
 		SecretName:  "webhook-certs",
 	})
 
-	nop := func(ctx context.Context, b podbinding.Bindable) (context.Context, error) {
+	nop := func(ctx context.Context, b psbinding.Bindable) (context.Context, error) {
 		return ctx, nil
 	}
 

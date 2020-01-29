@@ -74,9 +74,11 @@ func (dbs *DaytonaBindingStatus) MarkBindingAvailable() {
 }
 
 // Do implements the logic of injecting all of the Daytona content into the Pod.
-func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
+func (db *DaytonaBinding) Do(ctx context.Context, podspec *duckv1.WithPod) {
 	// First undo so that we can just unconditionally append below.
-	db.Undo(ctx, pod)
+	db.Undo(ctx, podspec)
+
+	pod := podspec.Spec.Template
 
 	// Add daytona secrets volume.
 	volume := corev1.Volume{
@@ -87,7 +89,7 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 			},
 		},
 	}
-	pod.Spec.Volumes = append(pod.Spec.Volumes, volume)
+	podspec.Spec.Template.Spec.Volumes = append(pod.Spec.Volumes, volume)
 
 
 	volumeMount := []corev1.VolumeMount{{
@@ -105,7 +107,7 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 		VolumeMounts: volumeMount,
 		Image: db.Spec.Image,
 	}
-	pod.Spec.InitContainers = append(pod.Spec.InitContainers, container)
+	podspec.Spec.Template.Spec.InitContainers = append(pod.Spec.InitContainers, container)
 
 	// Add volume mount to the user container. As users can customize the container name
 	// and sidecars can vary we look this up by the presence of the `K_REVISION` Environment
@@ -114,7 +116,7 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 		for _, e := range c.Env {
 			// This container is the user container. Modify and then exit.
 			if e.Name == "K_REVISION" {
-				pod.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts, volumeMount[0])
+				podspec.Spec.Template.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts, volumeMount[0])
 				return
 			}
 		}
@@ -122,12 +124,14 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 }
 
 // Undo implements the logic of removing all of the Daytona content from the Pod.
-func (db *DaytonaBinding) Undo(ctx context.Context, pod *duckv1.WithPodable) {
+func (db *DaytonaBinding) Undo(ctx context.Context, podspec *duckv1.WithPod) {
+
+	pod := podspec.Spec.Template
 
 	// Remove Daytona Volume
 	for i, v := range pod.Spec.Volumes {
 		if v.Name == daytona.SecretVolumeName {
-			pod.Spec.Volumes = append(pod.Spec.Volumes[:i], pod.Spec.Volumes[i+1:]...)
+			podspec.Spec.Template.Spec.Volumes = append(pod.Spec.Volumes[:i], pod.Spec.Volumes[i+1:]...)
 			break
 		}
 	}
@@ -135,18 +139,22 @@ func (db *DaytonaBinding) Undo(ctx context.Context, pod *duckv1.WithPodable) {
 	// Remove Daytona InitContainer
 	for i, c := range pod.Spec.InitContainers {
 		if c.Name == daytona.ContainerName {
-			pod.Spec.InitContainers = append(pod.Spec.InitContainers[:i], pod.Spec.InitContainers[i+1:]...)
+			podspec.Spec.Template.Spec.InitContainers = append(pod.Spec.InitContainers[:i], pod.Spec.InitContainers[i+1:]...)
 			break
 		}
 	}
 
 	// Remove Volume from user container
 	for i, c := range pod.Spec.Containers {
-		for j, e := range c.Env {
+		for _, e := range c.Env {
 			// This container is the user container. Remove and then exit.
 			if e.Name == "K_REVISION" {
-				pod.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts[:j], pod.Spec.Containers[i].VolumeMounts[j+1:]...)
-				return
+				for k, v := range c.VolumeMounts {
+					if v.Name == daytona.SecretVolumeName {
+						podspec.Spec.Template.Spec.Containers[i].VolumeMounts = append(pod.Spec.Containers[i].VolumeMounts[:k], pod.Spec.Containers[i].VolumeMounts[k+1:]...)
+						return
+					}
+				}
 			}
 		}
 	}

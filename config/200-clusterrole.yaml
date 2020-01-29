@@ -67,7 +67,7 @@ metadata:
     binding.app/release: devel
     binding.app/controller: "true"
 rules:
-  - apiGroups: [""]
-    resources: ["pods"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
     verbs: ["get", "list", "patch", "watch"]
 ---

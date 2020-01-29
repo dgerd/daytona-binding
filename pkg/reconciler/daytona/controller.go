@@ -20,7 +20,7 @@ import (
 	"context"
 
 	dbinformer "github.com/dgerd/daytona-binding/pkg/client/injection/informers/daytonabinding/v1alpha1/daytonabinding"
-	"knative.dev/pkg/client/injection/ducks/duck/v1/podable"
+	"knative.dev/pkg/client/injection/ducks/duck/v1/podspecable"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -33,7 +33,7 @@ import (
 	"knative.dev/pkg/injection/clients/dynamicclient"
 	"knative.dev/pkg/logging"
 	"knative.dev/pkg/tracker"
-	"knative.dev/pkg/webhook/podbinding"
+	"knative.dev/pkg/webhook/psbinding"
 
 	"github.com/dgerd/daytona-binding/pkg/apis/daytonabinding/v1alpha1"
 )
@@ -53,11 +53,11 @@ func NewController(
 
 	dbInformer := dbinformer.Get(ctx)
 	dc := dynamicclient.Get(ctx)
-	podInformerFactory := podable.Get(ctx)
+	podInformerFactory := podspecable.Get(ctx)
 
-	c := &podbinding.BaseReconciler{
+	c := &psbinding.BaseReconciler{
 		GVR: v1alpha1.SchemeGroupVersion.WithResource("daytonabindings"),
-		Get: func(namespace string, name string) (podbinding.Bindable, error) {
+		Get: func(namespace string, name string) (psbinding.Bindable, error) {
 			return dbInformer.Lister().DaytonaBindings(namespace).Get(name)
 		},
 		DynamicClient: dc,
@@ -81,18 +81,18 @@ func NewController(
 	return impl
 }
 
-func ListAll(ctx context.Context, handler cache.ResourceEventHandler) podbinding.ListAll {
+func ListAll(ctx context.Context, handler cache.ResourceEventHandler) psbinding.ListAll {
 	dbInformer := dbinformer.Get(ctx)
 
 	// Whenever a DaytonaBinding changes our webhook programming might change.
 	dbInformer.Informer().AddEventHandler(handler)
 
-	return func() ([]podbinding.Bindable, error) {
+	return func() ([]psbinding.Bindable, error) {
 		l, err := dbInformer.Lister().List(labels.Everything())
 		if err != nil {
 			return nil, err
 		}
-		bl := make([]podbinding.Bindable, 0, len(l))
+		bl := make([]psbinding.Bindable, 0, len(l))
 		for _, elt := range l {
 			bl = append(bl, elt)
 		}
