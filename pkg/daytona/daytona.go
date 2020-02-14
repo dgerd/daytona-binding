@@ -23,9 +23,7 @@ import (
 const (
 	ContainerName    = "daytona"
 	SecretVolumeName = "vault-secrets"
-	MountPath        = "/home/vault"
 	RunAsUser        = 9999
 	AllowPriv        = false
 	Medium           = corev1.StorageMediumMemory
-	SecretMountPath  = MountPath + "/secrets"   
 )

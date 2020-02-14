@@ -1,0 +1,51 @@
+# Copyright 2020 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: binding.app/v1alpha1
+kind: DaytonaBinding
+metadata:
+  name: daytona-binding
+  namespace: codelabs
+spec:
+  # Subject defines the set of Resources to inject
+  subject:
+    apiVersion: v1
+    kind: Pod
+    namespace: codelabs
+    selector:
+      matchExpressions:
+        - key: daytona-binding
+          operator: In
+          values:
+          - init
+
+  # Daytona Image URL to inject into the Pods
+  image: gcr.io/cruise-gcr-dev/daytona
+
+  # AuthMount is the name of the Kubernetes Auth Backend to use when logging into Vault
+  authMount: kubernetes-vault-auth-backend
+  # AuthRole is the role Daytona will use when logging into Vault.
+  # Optional - Daytona uses the service account name, if VAULT_AUTH_ROLE is not specified
+  # authRole: paas-codelab
+
+  # MountPath is the path to mount an in-memory volume to all containers
+  mountPath: /home/vault
+  # TokenPath is the path that Daytona will write the Vault auth token to
+  tokenPath: /home/vault/.vault-token
+  # SecretPath is the path to write secrets to
+  secretPath: /home/vault/secrets
+
+  # vault path from white to extract secrets (directory or file)
+  vaultSecretsApp: secret/app/team-name/env-name/namespace-name/app-name
+  # i have no idea...
+  # vaultSecretsGlobal: nothing/to/see/here

@@ -57,25 +57,28 @@ type DaytonaBindingSpec struct {
 	// be bound with Github secret data.
 	Subject tracker.Reference `json:"subject"`
 
-	// The location of the Daytona image
+	// Image is the location of the Daytona container image
 	Image string `json:"image"`
 
-	Auth string `json:"auth"`
-
+	// AuthMount is the name of the Kubernetes Auth Backend to use when logging into Vault
 	AuthMount string `json:"authMount"`
 
-	SecretEnv string `json:"secretEnv"`
+	// AuthRole is the role Daytona will use when logging into Vault.
+	// Optional - Daytona uses the service account name, if VAULT_AUTH_ROLE is not specified
+	AuthRole string `json:"authRole"`
 
+	// MountPath is the path to mount an in-memory volume to all containers
+	MountPath string `json:"mountPath"`
+
+	// TokenPath is the path that Daytona will write the Vault auth token to
 	TokenPath string `json:"tokenPath"`
 
-	VaultAuthRole string `json:"vaultAuthRole"`
-
+	// SecretPath is the path to write secrets to
 	SecretPath string `json:"secretPath"`
 
 	VaultSecretsApp string `json:"vaultSecretsApp"`
 
 	VaultSecretsGlobal string `json:"vaultSecretsGlobal"`
-	
 }
 
 // DaytonaBindingStatus communicates the observed state of the DaytonaBinding (from the controller).

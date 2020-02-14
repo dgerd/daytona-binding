@@ -12,7 +12,7 @@ The Daytona Binding injects a [Daytona](https://github.com/cruise-automation/day
 To install the binding system and CRDs:
 
 ```
-ko apply -f config/
+KO_DOCKER_REPO=gcr.io/cruise-gcr-dev ko apply -f config/
 ```
 
 This step sets up:
@@ -23,8 +23,10 @@ This step sets up:
 * Custom Resource Definitions
 * Deployment (runs webhook and reconciler)
 
-# Setup Binding
+# Example Binding
 
-See [example.yaml](./example.yaml)
+See [example-binding.yaml](./example-binding.yaml)
 
+# Example Usage
 
+See [example-ksvc.yaml](./example-ksvc.yaml)

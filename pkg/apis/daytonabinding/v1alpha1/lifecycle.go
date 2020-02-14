@@ -17,8 +17,9 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"knative.dev/pkg/ptr"
 	"context"
+
+	"knative.dev/pkg/ptr"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -89,21 +90,20 @@ func (db *DaytonaBinding) Do(ctx context.Context, pod *duckv1.WithPodable) {
 	}
 	pod.Spec.Volumes = append(pod.Spec.Volumes, volume)
 
-
 	volumeMount := []corev1.VolumeMount{{
-		Name: daytona.SecretVolumeName,
-		MountPath: daytona.SecretMountPath,
+		Name:      daytona.SecretVolumeName,
+		MountPath: db.Spec.MountPath,
 	}}
 	// Add daytona to the init containers section.
 	container := corev1.Container{
 		Name: daytona.ContainerName,
-		Env: daytonaEnv(db),
+		Env:  daytonaEnv(db),
 		SecurityContext: &corev1.SecurityContext{
-			RunAsUser: ptr.Int64(daytona.RunAsUser),
+			RunAsUser:                ptr.Int64(daytona.RunAsUser),
 			AllowPrivilegeEscalation: ptr.Bool(false),
 		},
 		VolumeMounts: volumeMount,
-		Image: db.Spec.Image,
+		Image:        db.Spec.Image,
 	}
 	pod.Spec.InitContainers = append(pod.Spec.InitContainers, container)
 
@@ -153,31 +153,48 @@ func (db *DaytonaBinding) Undo(ctx context.Context, pod *duckv1.WithPodable) {
 }
 
 func daytonaEnv(db *DaytonaBinding) []corev1.EnvVar {
-	return []corev1.EnvVar{
+	vars := []corev1.EnvVar{
+		// always use a Kubernetes Auth Backend
 		{
-			Name: "K8S_AUTH",
-			Value: db.Spec.Auth,
-		}, {
-			Name: "K8S_AUTH_MOUNT",
+			Name:  "K8S_AUTH",
+			Value: "true",
+		},
+		// auth mount/name is required
+		{
+			Name:  "K8S_AUTH_MOUNT",
 			Value: db.Spec.AuthMount,
-		}, {
-			Name: "SECRET_ENV",
-			Value: db.Spec.SecretEnv,
-		}, {
-			Name: "TOKEN_PATH",
-			Value: db.Spec.TokenPath,
-		}, {
-			Name: "VAULT_AUTH_ROLE",
-			Value: db.Spec.VaultAuthRole,
-		}, {
-			Name: "SECRET_PATH",
-			Value: db.Spec.SecretPath,
-		}, {
-			Name: "VAULT_SECRETS_APP",
-			Value: db.Spec.VaultSecretsApp,
-		}, {
-			Name: "VAULT_SECRETS_GLOBAL",
-			Value: db.Spec.VaultSecretsGlobal,
 		},
 	}
+	// optional vars
+	if db.Spec.AuthRole != "" {
+		vars = append(vars, corev1.EnvVar{
+			Name:  "VAULT_AUTH_ROLE",
+			Value: db.Spec.AuthRole,
+		})
+	}
+	if db.Spec.TokenPath != "" {
+		vars = append(vars, corev1.EnvVar{
+			Name:  "TOKEN_PATH",
+			Value: db.Spec.TokenPath,
+		})
+	}
+	if db.Spec.SecretPath != "" {
+		vars = append(vars, corev1.EnvVar{
+			Name:  "SECRET_PATH",
+			Value: db.Spec.SecretPath,
+		})
+	}
+	if db.Spec.VaultSecretsApp != "" {
+		vars = append(vars, corev1.EnvVar{
+			Name:  "VAULT_SECRETS_APP",
+			Value: db.Spec.VaultSecretsApp,
+		})
+	}
+	if db.Spec.VaultSecretsGlobal != "" {
+		vars = append(vars, corev1.EnvVar{
+			Name:  "VAULT_SECRETS_GLOBAL",
+			Value: db.Spec.VaultSecretsGlobal,
+		})
+	}
+	return vars
 }

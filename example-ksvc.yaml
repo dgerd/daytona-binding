@@ -2,9 +2,13 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: hello-world
-  namespace: default
+  namespace: codelabs
 spec:
   template:
+    metadata:
+      labels:
+        daytona-binding: init
     spec:
+      serviceAccountName: paas-codelab
       containers:
       - image: gcr.io/cloudrun/hello
